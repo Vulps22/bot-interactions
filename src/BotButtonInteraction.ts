@@ -1,0 +1,50 @@
+import { ButtonInteraction, ModalBuilder } from 'discord.js';
+import { BotComponentInteraction } from './BotComponentInteraction';
+
+export class BotButtonInteraction extends BotComponentInteraction {
+  protected readonly _interaction: ButtonInteraction;
+  private readonly _params: Map<string, string>;
+  private readonly _baseId: string;
+  private readonly _action: string;
+
+  constructor(interaction: ButtonInteraction, executionId: string) {
+    super(interaction, executionId);
+    this._interaction = interaction;
+
+    const { baseId, action, params } = this._parseCustomId(interaction.customId);
+    this._baseId = baseId;
+    this._action = action;
+    this._params = params;
+  }
+
+  get baseId() { return this._baseId; }
+  get action() { return this._action; }
+  get params() { return this._params; }
+  get messageId(): string { return this._interaction.message.id; }
+
+  showModal(modal: ModalBuilder) {
+    return this._interaction.showModal(modal);
+  }
+
+  private _parseCustomId(customId: string): { baseId: string; action: string; params: Map<string, string> } {
+    const params = new Map<string, string>();
+    const parts = customId.split('_');
+
+    if (parts.length < 2) {
+      return { baseId: customId, action: '', params };
+    }
+
+    const prefix = parts[0];
+    const action = parts[1];
+    const baseId = `${prefix}_${action}`;
+
+    for (let i = 2; i < parts.length; i++) {
+      const [key, value] = parts[i].split(':');
+      if (key && value) {
+        params.set(key, value);
+      }
+    }
+
+    return { baseId, action, params };
+  }
+}
