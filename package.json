@@ -1,6 +1,6 @@
 {
   "name": "@vulps22/bot-interactions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Discord bot interaction abstraction layer for the Project Encourage ecosystem",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
