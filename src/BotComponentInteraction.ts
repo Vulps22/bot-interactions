@@ -1,4 +1,4 @@
-import { ButtonInteraction, InteractionUpdateOptions, MessageEditOptions, MessageFlags } from 'discord.js';
+import { ButtonInteraction, InteractionUpdateOptions, MessageFlags } from 'discord.js';
 import { BotRepliableInteraction } from './BotRepliableInteraction';
 import { AnySelectMenuInteraction } from './types/AnySelectMenuInteraction';
 
