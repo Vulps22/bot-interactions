@@ -1,4 +1,4 @@
-import { ButtonInteraction, InteractionUpdateOptions } from 'discord.js';
+import { ButtonInteraction, InteractionUpdateOptions, MessageEditOptions, MessageFlags } from 'discord.js';
 import { BotRepliableInteraction } from './BotRepliableInteraction';
 import { AnySelectMenuInteraction } from './types/AnySelectMenuInteraction';
 
@@ -28,7 +28,9 @@ export abstract class BotComponentInteraction extends BotRepliableInteraction {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateComponentMessage(content: string | null, options?: any) {
     const updateOptions = { ...options };
-    if (content && content.length > 0) {
+    const isComponentsV2 = (updateOptions.flags & MessageFlags.IsComponentsV2) !== 0;
+
+    if (!isComponentsV2) {
       updateOptions.content = content;
     } else {
       delete updateOptions.content;
