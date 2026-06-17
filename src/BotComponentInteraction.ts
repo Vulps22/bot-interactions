@@ -1,6 +1,7 @@
 import { ButtonInteraction, InteractionUpdateOptions, MessageFlags } from 'discord.js';
 import { BotRepliableInteraction } from './BotRepliableInteraction';
 import { AnySelectMenuInteraction } from './types/AnySelectMenuInteraction';
+import { UniversalMessage } from './types/UniversalMessage';
 
 export abstract class BotComponentInteraction extends BotRepliableInteraction {
   protected declare readonly _interaction: ButtonInteraction | AnySelectMenuInteraction;
@@ -25,16 +26,24 @@ export abstract class BotComponentInteraction extends BotRepliableInteraction {
     return this._interaction.deferUpdate();
   }
 
+  updateComponentMessage(view: UniversalMessage): void;
+  /** @deprecated Pass a view instead */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateComponentMessage(content: string | null, options?: any) {
-    const updateOptions = { ...options };
-    const isComponentsV2 = (updateOptions.flags & MessageFlags.IsComponentsV2) !== 0;
-
-    if (!isComponentsV2) {
-      updateOptions.content = content;
+  updateComponentMessage(content: string | null, options?: any): void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  updateComponentMessage(contentOrView: string | null | UniversalMessage, options?: any) {
+    if (typeof contentOrView !== 'string' && contentOrView !== null) {
+      return this.update(contentOrView as InteractionUpdateOptions);
     } else {
-      delete updateOptions.content;
+      process.emitWarning('updateComponentMessage(content, options) is deprecated — pass a view instead', 'DeprecationWarning');
+      const updateOptions = { ...options };
+      const isComponentsV2 = (updateOptions.flags & MessageFlags.IsComponentsV2) !== 0;
+      if (!isComponentsV2) {
+        updateOptions.content = contentOrView;
+      } else {
+        delete updateOptions.content;
+      }
+      return this.update(updateOptions);
     }
-    return this.update(updateOptions);
   }
 }

@@ -7,3 +7,4 @@ export { BotModalInteraction } from './BotModalInteraction';
 export { BotSelectMenuInteraction } from './BotSelectMenuInteraction';
 export type { AnySelectMenuInteraction } from './types/AnySelectMenuInteraction';
 export type { UniversalMessage } from './types/UniversalMessage';
+export { noticeView, successView, errorView } from './views/index';
